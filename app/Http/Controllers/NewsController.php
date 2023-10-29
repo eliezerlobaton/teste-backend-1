@@ -38,4 +38,16 @@ class NewsController extends Controller
 
         return response()->json(['error' => 'Error en la solicitud API'], 500);
     }
+
+    public function index()
+    {
+        $news = News::all();
+        return view('welcome', compact('news'));
+    }
+
+    public function show($id)
+    {
+        $news = News::find($id);
+        return view('new-detail', compact('news'));
+    }
 }
