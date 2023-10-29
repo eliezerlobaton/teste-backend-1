@@ -16,9 +16,15 @@
 </head>
 
 <body class="antialiased">
-    <h1 class="text-3xl font-bold underline text-center">
-        Hello world!
-    </h1>
+    <ul>
+        @foreach ($articles as $article)
+            <li>
+                <h2>{{ $article->title }}</h2>
+                <p>{{ $article->description }}</p>
+                <a href="{{ $article->url }}" target="_blank">Leer más</a>
+            </li>
+        @endforeach
+    </ul>
 </body>
 
 </html>

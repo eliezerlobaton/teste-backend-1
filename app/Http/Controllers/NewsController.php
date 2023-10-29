@@ -2,64 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\News;
 use Illuminate\Http\Request;
+use App\Models\News;
+use Illuminate\Support\Facades\Http;
 
 class NewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function importNewsData()
     {
-        return view('welcome');
-    }
+        $apiKey = 'd554dc986ea04fb1906ad8eab03e50ca';
+        $url = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=$apiKey";
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $response = Http::get($url);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($response->successful()) {
+            $data = $response->json();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(News $news)
-    {
-        //
-    }
+            if (isset($data['articles'])) {
+                foreach ($data['articles'] as $article) {
+                    $news = new News();
+                    $news->title = $article['title'] ?? 'No content available';
+                    $news->source = $article['source']['name'] ?? 'No content available';
+                    $news->content = $article['content'] ?? 'No content available';
+                    $news->image = $article['urlToImage'] ?? 'No content available';
+                    $news->author = $article['author'] ?? 'No content available';
+                    $news->published_at = $article['publishedAt'] ?? 'No content available';
+                    $news->url = $article['url'] ?? 'No content available';
+                    $news->description = $article['description'] ?? 'No content available';
+                    $news->save();
+                }
+            }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(News $news)
-    {
-        //
-    }
+            return response()->json(['message' => 'Carga exitosa']);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, News $news)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(News $news)
-    {
-        //
+        return response()->json(['error' => 'Error en la solicitud API'], 500);
     }
 }
