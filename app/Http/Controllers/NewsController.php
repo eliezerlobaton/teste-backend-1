@@ -20,23 +20,25 @@ class NewsController extends Controller
 
             if (isset($data['articles'])) {
                 foreach ($data['articles'] as $article) {
+                    if ($article['author'] !== null) {
                     $news = new News();
-                    $news->title = $article['title'] ?? 'No content available';
-                    $news->source = $article['source']['name'] ?? 'No content available';
-                    $news->content = $article['content'] ?? 'No content available';
-                    $news->image = $article['urlToImage'] ?? 'No content available';
-                    $news->author = $article['author'] ?? 'No content available';
-                    $news->published_at = $article['publishedAt'] ?? 'No content available';
-                    $news->url = $article['url'] ?? 'No content available';
-                    $news->description = $article['description'] ?? 'No content available';
+                    $news->title = $article['title'];
+                    $news->source = $article['source']['name'];
+                    $news->content = $article['content'];
+                    $news->image = $article['urlToImage'];
+                    $news->author = $article['author'];
+                    $news->published_at = $article['publishedAt'];
+                    $news->url = $article['url'];
+                    $news->description = $article['description'];
                     $news->save();
+                    }
                 }
             }
-
-            return response()->json(['message' => 'Carga exitosa']);
+            
+            return response()->json(['message' => 'Data carregada com sucesso!']);
         }
 
-        return response()->json(['error' => 'Error en la solicitud API'], 500);
+        return response()->json(['error' => 'Erro na requisição da API'], 500);
     }
 
     public function index()
