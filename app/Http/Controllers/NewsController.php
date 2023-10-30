@@ -45,6 +45,12 @@ class NewsController extends Controller
         return view('welcome', compact('news'));
     }
 
+    public function showIndex()
+    {
+        $news = News::all();
+        return response()->json($news);
+    }
+
     public function show($id)
     {
         $news = News::find($id);

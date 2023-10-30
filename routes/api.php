@@ -16,3 +16,4 @@ use App\Http\Controllers\NewsController;
 */
 
 Route::get('import-news', [NewsController::class, 'importNewsData']);
+Route::get('news', [NewsController::class, 'showIndex']);
