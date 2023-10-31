@@ -2,6 +2,36 @@ version: "3.7"
 
 services:
 
+    # image project
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - redis
+        networks:
+            - laravel
+
+    # nginx
+    nginx:
+        image: nginx:latest
+        platform: linux/x86_64
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        depends_on:
+            - app
+        networks:
+            - laravel
+
     pgsql:
         image: postgres:latest
         platform: linux/x86_64
@@ -13,3 +43,11 @@ services:
             POSTGRES_USER: ${DB_USERNAME}
         ports:
             - "5432:5432"
+        volumes:
+            - ./.docker/postgres/data:/var/lib/postgresql/data
+        networks:
+            - laravel
+    
+networks:
+    laravel:
+        driver: bridge
